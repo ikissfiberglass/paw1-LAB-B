@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ForecastRecordRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ForecastRecordRepository::class)]
 class ForecastRecord
@@ -14,18 +15,27 @@ class ForecastRecord
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: 'Date and time is required.')]
     private ?\DateTime $timestamp = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: 'Temperature is required.')]
+    #[Assert\Type(type: 'numeric', message: 'Temperature must be numeric.')]
+    #[Assert\Range(min: -100, max: 100, notInRangeMessage: 'Temperature must be between {{ min }} and {{ max }} °C.')] 
     private ?float $temperature_c = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\Range(min: 0, max: 100, notInRangeMessage: 'Humidity must be between {{ min }} and {{ max }}%.')]
     private ?float $humidity = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: 'Atmospheric pressure is required.')]
+    #[Assert\Type(type: 'numeric', message: 'Atmospheric pressure must be numeric.')]
+    #[Assert\Range(min: 500, max: 1100, notInRangeMessage: 'Atmospheric pressure must be between {{ min }} and {{ max }} hPa.')] 
     private ?float $athmospheric_pressure = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\Range(min: 0, max: 300, notInRangeMessage: 'Wind speed must be between {{ min }} and {{ max }} km/h.')] 
     private ?int $wind_speed = null;
 
     #[ORM\Column(nullable: true)]

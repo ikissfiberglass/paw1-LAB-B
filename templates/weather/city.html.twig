@@ -8,19 +8,33 @@
 
 {% block body %}
     <main>
+
         <h1>Weather in {{ location.city }}, {{ location.country }}</h1>
 
         <ul>
-            {% for measurement in measurements %}
-                <li>{{ measurement.timestamp|date('d.m.Y H:i') }}: {{ measurement.temperatureC }}&deg;C,
-                    wilgotność: {{ measurement.humidity }}%,  ciśnienie: {{ measurement.athmosphericPressure }}hPa,
-                    prędkość wiatru: {{ measurement.windSpeed }}km/h,
-                    opady w najbliższe 6h: {% if measurement.anyPrecipitationsForTheNearest6Hours%} Tak {% else %} Nie {% endif %}
-
-
-                </li>
-            {% endfor %}
+            {% if measurements is empty %}
+                <p>Brak pomiarów dla tego miasta</p>
+            {% else %}
+                <ul>
+                {% for measurement in measurements %}
+                    <li>
+                        {{ measurement.timestamp|date('d.m.Y H:i') }}: {{ measurement.temperatureC }}&deg;C,
+                        wilgotność: {{ measurement.humidity }}%, ciśnienie: {{ measurement.athmosphericPressure }}hPa,
+                        prędkość wiatru: {{ measurement.windSpeed }}km/h,
+                        opady w najbliższe 6h: {% if measurement.anyPrecipitationsForTheNearest6Hours %} Tak {% else %} Nie {% endif %}
+                        <a href="{{ path('app_forecast_edit', {'locationId': location.id, 'id': measurement.id}) }}" class="btn btn-sm btn-primary">edit</a>
+                        <form method="post" action="{{ path('app_forecast_delete', {'locationId': location.id, 'id': measurement.id}) }}" style="display:inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ measurement.id) }}">
+                            <button type="submit" class="btn btn-sm btn-primary">delete</button>
+                        </form>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% endif %}
         </ul>
+        <p><a href="{{ path('app_location_index') }}"> Lokalizacje </a></p>
+
+
     </main>
 
 {% endblock %}

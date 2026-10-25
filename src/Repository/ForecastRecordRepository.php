@@ -22,14 +22,14 @@ class ForecastRecordRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('m');
         $qb->where('m.location = :location')
-            ->setParameter('location', $location)
-            ->andWhere('m.timestamp > :now')
-            ->setParameter('now', date('Y-m-d'));
+            ->setParameter('location', $location);
+//            ->andWhere('m.timestamp > :now')
+//            ->setParameter('now', date('Y-m-d'));
 
         $query = $qb->getQuery();
         $result = $query->getResult();
         return $result;
-
+        
 
 
     }
